@@ -1,0 +1,18 @@
+{
+  
+  "targets": {
+    "build": {
+      
+      "options": {
+        
+        "assets": [
+          "apps/[project-name]/src/assets",
+          "apps/[project-name]/src/views"
+        ]
+      }
+      
+    }
+    
+  }
+  
+}

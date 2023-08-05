@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Image Conveter-Node</title>
+    <style>
+      .form-container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      background-color: #f9f9f9;
+    }
+
+    /* Style for form fields */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    /* Style for file upload field */
+    .file-upload {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      background-color: #3498db;
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .file-upload input[type="file"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    /* Style for width and height fields */
+    .width-height {
+      display: flex;
+    }
+
+    .width-height .form-group {
+      flex: 1;
+      margin-right: 10px;
+    }
+
+    /* Style for the submit button */
+    .form-submit {
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Additional styling for the file type field (select element) */
+    select.form-input {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      padding-right: 25px;
+      background: url("arrow-down.png") no-repeat center right;
+    }
+    </style>
+  </head>
+  <body>
+  {{!-- <img
+    src="/example.jpg"
+    alt="example image"
+  /> --}} 
+
+  <div class="form-container">
+ <form action="/upload" method="post" enctype="multipart/form-data">
+  <label for="file">File</label>
+  <input id="file" name="file" type="file" />
+  <label for="width">Width</label>
+  <input type="number" name="width" placeholder="width">
+  <label for="height">height</label>
+  <input type="number" name="height" placeholder="height">
+  <label for="cars">Choose a car:</label>
+
+<select name="extension" id="extension">
+  <option value="jpg">.jpg</option>
+  <option value="png">.png</option>
+  <option value="svg">.svg</option>
+  <option value="webp">.webp</option>
+</select>
+  <button>Upload</button>
+</form>
+</div>
+
+
+<div class="form-container">
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+      <label class="form-label" for="file">Upload File</label>
+      <label class="file-upload">
+        Choose File
+        <input type="file" id="file-upload">
+      </label>
+    </div>
+    <div class="width-height">
+      <div class="form-group">
+        <label class="form-label" for="width">Width</label>
+        <input type="number" class="form-input" id="width">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="height">Height</label>
+        <input type="number" class="form-input" id="height">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="file-type">Conversion Type</label>
+      <select class="form-input" id="file-type">
+        <option value="jpg">JPG</option>
+        <option value="png">PNG</option>
+        <option value="svg">SVG</option>
+        <option value="webp">WEBP</option>
+      </select>
+      </form>
+    </div>
+    <button type="submit" class="form-submit">Submit</button>
+  </div>
+<img id="imgttt" alt="">
+
+<script>
+const form = document.querySelector('form');
+form.addEventListener('submit', handleSubmit);
+
+function handleSubmit(event) {
+  /** @type {HTMLFormElement} */
+  const form = event.currentTarget;
+  const url = new URL(form.action);
+  const formData = new FormData(form);
+  const searchParams = new URLSearchParams(formData);
+  /** @type {Parameters<fetch>[1]} */
+  const fetchOptions = {
+    method: form.method,
+  };
+
+  if (form.method.toLowerCase() === 'post') {
+    if (form.enctype === 'multipart/form-data') {
+      fetchOptions.body = formData;
+    } else {
+      fetchOptions.body = searchParams;
+    }
+  } else {
+    url.search = searchParams;
+  }
+  fetch(url, fetchOptions).then(response => response.json())
+    .then(data => {console.log(data.b64Data);
+    document.getElementById('imgttt').setAttribute("src",`data:${data.extension};base64,${data.b64Data}`);
+    }).catch(err => console.log(err));
+
+  event.preventDefault();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>App Hello</title>
+  </head>
+  <body>
+  {{!-- <img
+    src="/example.jpg"
+    alt="example image"
+  /> --}}
+<form action="/upload" method="post" enctype="multipart/form-data">
+  <label for="file">File</label>
+  <input id="file" name="file" type="file" />
+  <label for="width">Width</label>
+  <input type="number" name="width" placeholder="width">
+  <label for="height">height</label>
+  <input type="number" name="height" placeholder="height">
+  <button>Upload</button>
+</form>
+
+<script>
+const form = document.querySelector('form');
+form.addEventListener('submit', handleSubmit);
+
+function handleSubmit(event) {
+  /** @type {HTMLFormElement} */
+  const form = event.currentTarget;
+  const url = new URL(form.action);
+  const formData = new FormData(form);
+  const searchParams = new URLSearchParams(formData);
+  /** @type {Parameters<fetch>[1]} */
+  const fetchOptions = {
+    method: form.method,
+  };
+
+  if (form.method.toLowerCase() === 'post') {
+    if (form.enctype === 'multipart/form-data') {
+      fetchOptions.body = formData;
+    } else {
+      fetchOptions.body = searchParams;
+    }
+  } else {
+    url.search = searchParams;
+  }
+  fetch(url, fetchOptions);
+
+  event.preventDefault();
+}
+</script>
+</body>
+</html>
